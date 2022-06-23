@@ -1,49 +1,31 @@
 package com.ariel.ApiSocialMedia.Repositories;
 
-import com.ariel.ApiSocialMedia.Model.Post;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import com.ariel.ApiSocialMedia.Model.Post;
+import com.ariel.ApiSocialMedia.Model.Users;
+
 
 @Repository
-public class PostRepository {
+public interface PostRepository extends JpaRepository<Post, Long> {
+	
+	@Query( value = "SELECT * FROM post WHERE state = true", nativeQuery = true)
+	public List<Post> findAll();
+	
+	@Query( value = "SELECT * FROM post WHERE id = :id AND state = true", nativeQuery = true)
+	public Optional<Post> findById(@Param("id") Long id);
 
-    @Autowired
-    private JdbcTemplate jdbc;
-
-    public List<Post> getAllPosts(){
-        String query = "SELECT * FROM `posts`";
-        List<Post> posts = jdbc.query(query, BeanPropertyRowMapper.newInstance(Post.class));
-        return posts;
-    }
-
-    public int savePost(Post post){
-        String query = "INSERT INTO `posts`(`title`, `body`, `id_user`) VALUE(?, ?, ?)";
-        Object[] params = {post.getTitle(), post.getBody(), post.getIdUser()};
-        int result = jdbc.update(query, params);
-        return result;
-    }
-
-    public int updatePost(Post post, int id){
-        String query = "UPDATE `posts` SET `title` = ?, `body` = ?, `id_user` = ? WHERE `id` = ? ";
-        Object[] params = {post.getTitle(), post.getBody(), post.getIdUser(), id};
-        int result = jdbc.update(query, params);
-        return result;
-    }
-
-    public int deletePost(int id){
-        String query = "DELETE FROM `posts` WHERE `id` = ? ";
-        Object[] params = { id };
-        int result = jdbc.update(query, params);
-        return result;
-    }
-
-    public List<Post> getAllPostOfUser(int idUser){
-        String query = "SELECT p.id, p.title, p.body, p.id_user FROM `posts` p INNER JOIN `users` u ON p.id_user = u.id WHERE p.id_user = ?";
-        Object[] params = { idUser };
-        return jdbc.query(query, BeanPropertyRowMapper.newInstance(Post.class), params);
-    }
+	@Modifying
+	@Query( value = "UPDATE post SET state = false WHERE id = :id", nativeQuery = true)
+	public void deleteById(@Param("id") Long id);
+	
+	public List<Post> findByUserAndState(Users user, boolean state);
 }

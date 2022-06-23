@@ -1,7 +1,10 @@
 package com.ariel.ApiSocialMedia.Services;
 
 import com.ariel.ApiSocialMedia.Model.Post;
+import com.ariel.ApiSocialMedia.Model.Users;
 import com.ariel.ApiSocialMedia.Repositories.PostRepository;
+import com.ariel.ApiSocialMedia.Repositories.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,25 +14,32 @@ import java.util.List;
 public class PostService {
 
     @Autowired
-    private PostRepository pr;
+    private PostRepository repository;
+    
+    @Autowired 
+    private UserRepository repositoryUser;
 
     public List<Post> getPosts(){
-        return pr.getAllPosts();
+        return repository.findAll();
     }
 
-    public int savePost(Post post){
-        return pr.savePost(post);
+    public boolean savePost(Post post, long idUser){
+    	if(repositoryUser.getById(idUser) == null) return false;
+    	Users user = repositoryUser.findById(idUser).get(); 
+    	post.setUser(user);
+    	repository.save(post);
+        return true;
     }
 
-    public int updatePost(Post post, int id){
-        return pr.updatePost(post, id);
+    public boolean deletePost(long id){
+        if(repository.getById(id) == null) return false;
+        repository.deleteById(id);
+        return true;
     }
 
-    public int deletePost(int id){
-        return pr.deletePost(id);
-    }
-
-    public List<Post> getPostsOfUser(int idUser){
-        return pr.getAllPostOfUser(idUser);
+    public List<Post> getPostsOfUser(long idUser){
+        if(repositoryUser.getById(idUser) == null) return null;
+        Users user = repositoryUser.findById(idUser).get();
+        return repository.findByUserAndState(user, true);
     }
 }

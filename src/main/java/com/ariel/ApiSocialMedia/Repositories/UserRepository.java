@@ -1,43 +1,29 @@
 package com.ariel.ApiSocialMedia.Repositories;
 
-import com.ariel.ApiSocialMedia.Model.User;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
 
-import java.util.List;
+
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+import com.ariel.ApiSocialMedia.Model.Users;
+
 
 @Repository
-public class UserRepository {
+public interface UserRepository extends JpaRepository<Users, Long> {
+	//get a reference
+	public Users getByUsernameAndState(String username, boolean state);
+	
+	//find a user
+	public Users findByUsernameAndState(String username, boolean state);
 
-    @Autowired
-    private JdbcTemplate jdbc;
-
-    public List<User> getAllUsers(){
-        String query = "SELECT * FROM `users`";
-        List<User> allUsers = jdbc.query(query, BeanPropertyRowMapper.newInstance(User.class));
-        return allUsers;
-    }
-
-    public int saveUser( User user){
-        String query = "INSERT INTO `users`(`name`, `last_name`, `address`) VALUES (?, ?, ?)";
-        Object[] params = {user.getName(), user.getLastName(), user.getAddress()};
-        int result = jdbc.update(query, params);
-        return result;
-    }
-
-    public int updateUser(User user, int id){
-        String query = "UPDATE `users` SET `name` = ?, `last_name` = ?, `address` = ? WHERE id = ?";
-        Object[] params = {user.getName(), user.getLastName(), user.getAddress(), id};
-        int result = jdbc.update(query, params);
-        return result;
-    }
-
-    public int deleteUser(int id){
-        String query = "DELETE FROM `users` WHERE `id` = ?";
-        Object[] params = {id};
-        int result = jdbc.update(query, params);
-        return result;
-    }
+	@Query( value = "SELECT * FROM users WHERE id = :id AND state = true", nativeQuery = true)
+	public Optional<Users> findById(@Param("id") Long id);
+	
+	@Modifying
+	@Query(value = "UPDATE users SET state = false WHERE id = :id", nativeQuery = true)
+	public void deleteById(@Param("id") Long id);  
 }
