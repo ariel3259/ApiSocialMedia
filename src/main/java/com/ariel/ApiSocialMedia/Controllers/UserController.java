@@ -16,14 +16,14 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api2/users")
 public class UserController {
 
     @Autowired
     private UserService service;
 
 
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<String> postUser(@Valid @RequestBody Users user) {
     	if(!service.save(user)) return ResponseEntity.status(400).body("User already exists");
     	return ResponseEntity.status(200).body("Saved user");

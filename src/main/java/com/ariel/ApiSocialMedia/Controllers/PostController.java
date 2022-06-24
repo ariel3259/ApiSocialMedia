@@ -15,7 +15,7 @@ import java.util.Map;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/post")
+@RequestMapping("/api2/post")
 public class PostController {
 
     @Autowired

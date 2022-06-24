@@ -12,7 +12,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/comments")
+@RequestMapping("/api2/comments")
 public class CommentController {
 
     @Autowired
