@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
+import com.ariel.ApiSocialMedia.Services.UserService;
 import com.ariel.ApiSocialMedia.Utils.Jwt.TokenManager;
 import com.ariel.ApiSocialMedia.Utils.Jwt.Model.JwtRequest;
 import com.ariel.ApiSocialMedia.Utils.Jwt.Model.JwtResponse;
@@ -33,6 +33,9 @@ public class JwtController {
     
     @Autowired
     private UserDetailsService service;
+
+    @Autowired
+    private UserService service2;
 
     @Autowired
     private TokenManager tokenManager;
@@ -46,13 +49,14 @@ public class JwtController {
             authManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
         }
         catch(DisabledException ex){
-            return ResponseEntity.status(400).body(new JwtResponse("DISABLED"));
+            return ResponseEntity.status(400).body(new JwtResponse("DISABLED", 0));
         }catch(BadCredentialsException ex){
-            return ResponseEntity.status(400).body(new JwtResponse("BAD_CREDENTIALS"));
+            return ResponseEntity.status(400).body(new JwtResponse("BAD_CREDENTIALS", 0));
         }
         UserDetails user = service.loadUserByUsername(request.getUsername());
+        long idUser = service2.getByUsername(request.getUsername()).getId();
         String token = tokenManager.generateToken(user);
-        return ResponseEntity.status(200).body(new JwtResponse(token));
+        return ResponseEntity.status(200).body(new JwtResponse(token, idUser));
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

@@ -40,6 +40,7 @@ public class SecurityConfigure  {
             .antMatchers("/swagger-ui/**").permitAll()
             .antMatchers("/webjars/**").permitAll()
             .antMatchers("/swagger-resources/**").permitAll()
+            .antMatchers("/h2-console/**").permitAll()
             .anyRequest().authenticated()
             .and()
             .exceptionHandling()
