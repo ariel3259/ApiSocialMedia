@@ -22,17 +22,10 @@ public class UserController {
     @Autowired
     private UserService service;
 
-
     @PostMapping("/register")
     public ResponseEntity<String> postUser(@Valid @RequestBody Users user) {
     	if(!service.save(user)) return ResponseEntity.status(400).body("User already exists");
     	return ResponseEntity.status(200).body("Saved user");
-    }
-
-    @PutMapping()
-    public ResponseEntity<String> putUser(@Valid @RequestBody Users user){
-    	if(!service.update(user)) return ResponseEntity.status(400).body("User doesn't exists");
-    	return ResponseEntity.status(200).body("Modified User");
     }
 
     @DeleteMapping("/{id}")

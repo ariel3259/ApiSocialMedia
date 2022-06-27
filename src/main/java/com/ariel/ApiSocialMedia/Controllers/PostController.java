@@ -32,9 +32,14 @@ public class PostController {
     	return ResponseEntity.status(200).body("Created post");
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/post/{id}")
     public ResponseEntity<Boolean> deletePost( @PathVariable("id") int id){
         return ResponseEntity.status(201).body(service.deletePost(id));
+    }
+
+    @DeleteMapping("/post/user/{idUser}")
+    public ResponseEntity<Boolean> deletePostOfUser(@PathVariable("idUser") long idUser){
+        return ResponseEntity.status(200).body(service.deletePostOfUser(idUser));
     }
 
     @GetMapping("/{idUser}")

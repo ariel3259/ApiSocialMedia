@@ -17,7 +17,7 @@ public class UserService {
     private PasswordEncoder encoder;
 
     public boolean save(Users user){
-    	if(ur.getByUsernameAndState(user.getUsername(), true) != null) return false;
+    	if(ur.findByUsername(user.getUsername()) != null) return false;
     	String passwordHashed = encoder.encode(user.getPassword());
     	user.setPassword(passwordHashed);
     	ur.save(user);
@@ -25,15 +25,7 @@ public class UserService {
     }
     
     public Users getByUsername(String username){
-    	return ur.findByUsernameAndState(username, true);
-    }
-    
-    public boolean update(Users user){
-    	if(ur.getById(user.getId()) == null) return false;
-    	String passwordHashed = encoder.encode(user.getPassword());
-    	user.setPassword(passwordHashed);
-    	ur.save(user);
-    	return true;
+    	return ur.findByUsername(username);
     }
 
     public boolean delete(long id){

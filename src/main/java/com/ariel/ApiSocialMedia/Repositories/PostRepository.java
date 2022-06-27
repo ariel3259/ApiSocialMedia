@@ -9,9 +9,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
 import com.ariel.ApiSocialMedia.Model.Post;
-import com.ariel.ApiSocialMedia.Model.Users;
 
 
 @Repository
@@ -27,5 +25,10 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 	@Query( value = "UPDATE post SET state = false WHERE id = :id", nativeQuery = true)
 	public void deleteById(@Param("id") Long id);
 	
-	public List<Post> findByUserAndState(Users user, boolean state);
+	@Modifying
+	@Query(value = "UPDATE post SET state = false WHERE user_id = :idUser AND state = true", nativeQuery = true)
+	public void deleteByUserId(@Param("idUser") long idUser);
+
+	@Query(value = "SELECT * FROM post WHERE user_id = :idUser AND state = true", nativeQuery = true)
+	public List<Post> findByUserId(long idUser);
 }

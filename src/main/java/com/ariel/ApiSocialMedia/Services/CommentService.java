@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CommentService {
@@ -25,31 +26,30 @@ public class CommentService {
     private UserRepository userRepo;
 
     public List<Comment> getAllCommentsOfPost(long idPost){
-        Post post = postRepo.findById(idPost).get();
-        return commentRepo.findByPost(post);
+        return commentRepo.findByPostId(idPost);
     }
 
     public List<Comment> getAllCommentsOfUser(long idUser){
-        Users user = userRepo.findById(idUser).get();
-        return commentRepo.findByUser(user);
+        return commentRepo.findByUserId(idUser);
     }
 
     public boolean saveComment(Comment comment, long idPost, long idUser ){
-        Post post = postRepo.findById(idPost).get();
-        Users user = userRepo.findById(idUser).get();
-        if(post == null || user == null) return false;
-        comment.setPost(post);
-        comment.setUser(user);
+        Optional<Post> post = postRepo.findById(idPost);
+        Optional<Users> user = userRepo.findById(idUser);
+        if(post.isEmpty() || user.isEmpty()) return false;
+        comment.setPost(post.get());
+        comment.setUser(user.get());
         commentRepo.save(comment);
         return true;
     }
 
-    public boolean updateComment(Comment comment, long idPost, long idUser){
-        Post post = postRepo.findById(idPost).get();
-        Users user = userRepo.findById(idUser).get();
-        if(post == null || user == null) return false;
-        comment.setPost(post);
-        comment.setUser(user);
+    public boolean updateComment(Comment comment, long idPost, long idUser, long id){
+        Optional<Post> post = postRepo.findById(idPost);
+        Optional<Users> user = userRepo.findById(idUser);
+        if(post.isEmpty() || user.isEmpty() || !commentRepo.existsById(id)) return false;
+        comment.setPost(post.get());
+        comment.setUser(user.get());
+        comment.setId(id);
         commentRepo.save(comment);
         return true;
     }

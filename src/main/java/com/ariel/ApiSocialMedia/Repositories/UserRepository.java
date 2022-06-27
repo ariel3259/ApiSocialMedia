@@ -14,11 +14,10 @@ import com.ariel.ApiSocialMedia.Model.Users;
 
 @Repository
 public interface UserRepository extends JpaRepository<Users, Long> {
-	//get a reference
-	public Users getByUsernameAndState(String username, boolean state);
-	
+
 	//find a user
-	public Users findByUsernameAndState(String username, boolean state);
+	@Query( value = "SELECT * FROM users WHERE username = :username AND state = true", nativeQuery = true)
+	public Users findByUsername(@Param("username") String username);
 
 	@Query( value = "SELECT * FROM users WHERE id = :id AND state = true", nativeQuery = true)
 	public Optional<Users> findById(@Param("id") Long id);

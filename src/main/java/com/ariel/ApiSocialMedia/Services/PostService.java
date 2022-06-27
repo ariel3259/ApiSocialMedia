@@ -4,11 +4,10 @@ import com.ariel.ApiSocialMedia.Model.Post;
 import com.ariel.ApiSocialMedia.Model.Users;
 import com.ariel.ApiSocialMedia.Repositories.PostRepository;
 import com.ariel.ApiSocialMedia.Repositories.UserRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PostService {
@@ -24,9 +23,9 @@ public class PostService {
     }
 
     public boolean savePost(Post post, long idUser){
-    	if(repositoryUser.getById(idUser) == null) return false;
-    	Users user = repositoryUser.findById(idUser).get(); 
-    	post.setUser(user);
+        Optional<Users> user = repositoryUser.findById(idUser); 
+    	if(user.isEmpty()) return false;
+    	post.setUser(user.get());
     	repository.save(post);
         return true;
     }
@@ -37,9 +36,15 @@ public class PostService {
         return true;
     }
 
+    public boolean deletePostOfUser(long idUser){
+        if(repositoryUser.getById(idUser) == null) return false;
+        repository.deleteByUserId(idUser);
+        return true;
+    }
+
     public List<Post> getPostsOfUser(long idUser){
         if(repositoryUser.getById(idUser) == null) return null;
-        Users user = repositoryUser.findById(idUser).get();
-        return repository.findByUserAndState(user, true);
+        return repository.findByUserId(idUser);
     }
+
 }
