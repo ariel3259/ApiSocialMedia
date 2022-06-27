@@ -33,7 +33,6 @@ public class SecurityConfigure  {
             .and()
             .csrf().disable()
             .authorizeHttpRequests()
-            .antMatchers("/").permitAll()
             .antMatchers("/login").permitAll()
             .antMatchers("/api2/users/register").permitAll()
             .antMatchers("/api/**").permitAll()
