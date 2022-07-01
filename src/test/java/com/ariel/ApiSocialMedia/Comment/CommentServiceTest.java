@@ -56,6 +56,7 @@ public class CommentServiceTest {
         comments.add(comment);
     }
 
+    /* 
     @Test
     public void GET_ALL_COMMENTS_OF_POST(){
         when(commentRepo.findByPostId(idPost)).thenReturn(comments);
@@ -84,7 +85,7 @@ public class CommentServiceTest {
         when(commentRepo.findByUserId(idUser)).thenReturn(new ArrayList<>());
         List<Comment> commentsFound = service.getAllCommentsOfUser(idUser);
         assertEquals(0, commentsFound.size());
-    }
+    }*/
 
     @Test
     public void SAVE(){
