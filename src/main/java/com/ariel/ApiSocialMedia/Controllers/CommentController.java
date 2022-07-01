@@ -1,16 +1,17 @@
 package com.ariel.ApiSocialMedia.Controllers;
 
 import com.ariel.ApiSocialMedia.Dto.CommentDto;
+import com.ariel.ApiSocialMedia.Dto.PageCommentsDto;
 import com.ariel.ApiSocialMedia.Model.Comment;
 import com.ariel.ApiSocialMedia.Services.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.validation.Valid;
 
@@ -22,13 +23,17 @@ public class CommentController {
     private CommentService cs;
 
     @GetMapping("/post/{idPost}")
-    public ResponseEntity<List<Comment>> getAllCommentsByPost( @PathVariable("idPost") int idPost){
-        return ResponseEntity.status(200).body(cs.getAllCommentsOfPost(idPost));
+    public ResponseEntity<PageCommentsDto> getAllCommentsByPost( @PathVariable("idPost") int idPost, @RequestParam("index") int index){
+        Page<Comment> rawPageComments = cs.getAllCommentsOfPost(idPost, index);
+        PageCommentsDto pageComments = new PageCommentsDto(rawPageComments.getContent(), rawPageComments.getNumber());
+        return ResponseEntity.status(200).body(pageComments);
     }
 
     @GetMapping("/user/{idUser}")
-    public ResponseEntity<List<Comment>> getAllCommentsByUser( @PathVariable("idUser") int idUser){
-        return ResponseEntity.status(200).body(cs.getAllCommentsOfUser(idUser));
+    public ResponseEntity<PageCommentsDto> getAllCommentsByUser( @PathVariable("idUser") int idUser, @RequestParam("index") int index){
+        Page<Comment> rawPageComments = cs.getAllCommentsOfUser(idUser, index);
+        PageCommentsDto pageComments = new PageCommentsDto(rawPageComments.getContent(), rawPageComments.getNumber());
+        return ResponseEntity.status(200).body(pageComments);
     }
 
     @PostMapping()

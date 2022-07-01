@@ -1,16 +1,17 @@
 package com.ariel.ApiSocialMedia.Controllers;
 
+import com.ariel.ApiSocialMedia.Dto.PagePostDto;
 import com.ariel.ApiSocialMedia.Dto.PostDto;
 import com.ariel.ApiSocialMedia.Model.Post;
 import com.ariel.ApiSocialMedia.Services.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.validation.Valid;
 
@@ -22,8 +23,10 @@ public class PostController {
     private PostService service;
 
     @GetMapping
-    public ResponseEntity<List<Post>> getAllPost(){
-    	return ResponseEntity.status(200).body(service.getPosts());
+    public ResponseEntity<PagePostDto> getAllPost(@RequestParam("index") int index){
+        Page<Post> rawPagePosts = service.getPosts(index);
+        PagePostDto pagePosts = new PagePostDto(rawPagePosts.getContent(), rawPagePosts.getNumber()); 
+    	return ResponseEntity.status(200).body(pagePosts);
     }
 
     @PostMapping
@@ -43,8 +46,10 @@ public class PostController {
     }
 
     @GetMapping("/{idUser}")
-    public ResponseEntity<List<Post>> getPostsOfUser( @PathVariable("idUser") long idUser){
-    	return ResponseEntity.status(200).body(service.getPostsOfUser(idUser));
+    public ResponseEntity<PagePostDto> getPostsOfUser( @PathVariable("idUser") long idUser, @RequestParam("index") int index){
+    	Page<Post> rawPagePost = service.getPostsOfUser(idUser, index);
+        PagePostDto pagePostDto = new PagePostDto(rawPagePost.getContent(), rawPagePost.getNumber());
+        return ResponseEntity.status(200).body(pagePostDto);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

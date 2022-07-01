@@ -5,8 +5,10 @@ import com.ariel.ApiSocialMedia.Model.Users;
 import com.ariel.ApiSocialMedia.Repositories.PostRepository;
 import com.ariel.ApiSocialMedia.Repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -18,8 +20,9 @@ public class PostService {
     @Autowired 
     private UserRepository repositoryUser;
 
-    public List<Post> getPosts(){
-        return repository.findAll();
+    public Page<Post> getPosts(int index){
+        Pageable page = PageRequest.of(index - 1, 10);
+        return repository.findByStateIsTrue(page);
     }
 
     public boolean savePost(Post post, long idUser){
@@ -42,9 +45,10 @@ public class PostService {
         return true;
     }
 
-    public List<Post> getPostsOfUser(long idUser){
+    public Page<Post> getPostsOfUser(long idUser, int index){
+        Pageable page = PageRequest.of(index - 1 , 10);
         if(repositoryUser.getById(idUser) == null) return null;
-        return repository.findByUserId(idUser);
+        return repository.findByUserId(idUser, page);
     }
 
 }

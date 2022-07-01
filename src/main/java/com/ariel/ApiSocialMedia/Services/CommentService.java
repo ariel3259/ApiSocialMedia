@@ -6,11 +6,11 @@ import com.ariel.ApiSocialMedia.Model.Users;
 import com.ariel.ApiSocialMedia.Repositories.CommentRepository;
 import com.ariel.ApiSocialMedia.Repositories.PostRepository;
 import com.ariel.ApiSocialMedia.Repositories.UserRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,12 +25,14 @@ public class CommentService {
     @Autowired 
     private UserRepository userRepo;
 
-    public List<Comment> getAllCommentsOfPost(long idPost){
-        return commentRepo.findByPostId(idPost);
+    public Page<Comment> getAllCommentsOfPost(long idPost, int index){
+        Pageable page = PageRequest.of(index - 1, 10); 
+        return commentRepo.findByPostId(idPost, page);
     }
 
-    public List<Comment> getAllCommentsOfUser(long idUser){
-        return commentRepo.findByUserId(idUser);
+    public Page<Comment> getAllCommentsOfUser(long idUser, int index){
+        Pageable page = PageRequest.of(index - 1, 10);
+        return commentRepo.findByUserId(idUser, page);
     }
 
     public boolean saveComment(Comment comment, long idPost, long idUser ){
