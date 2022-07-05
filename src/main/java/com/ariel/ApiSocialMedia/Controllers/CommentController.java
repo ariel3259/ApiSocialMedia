@@ -25,14 +25,14 @@ public class CommentController {
     @GetMapping("/post/{idPost}")
     public ResponseEntity<PageCommentsDto> getAllCommentsByPost( @PathVariable("idPost") int idPost, @RequestParam("index") int index){
         Page<Comment> rawPageComments = cs.getAllCommentsOfPost(idPost, index);
-        PageCommentsDto pageComments = new PageCommentsDto(rawPageComments.getContent(), rawPageComments.getNumber());
+        PageCommentsDto pageComments = new PageCommentsDto(rawPageComments.getContent(), rawPageComments.getTotalPages(), rawPageComments.getNumber());
         return ResponseEntity.status(200).body(pageComments);
     }
 
     @GetMapping("/user/{idUser}")
     public ResponseEntity<PageCommentsDto> getAllCommentsByUser( @PathVariable("idUser") int idUser, @RequestParam("index") int index){
         Page<Comment> rawPageComments = cs.getAllCommentsOfUser(idUser, index);
-        PageCommentsDto pageComments = new PageCommentsDto(rawPageComments.getContent(), rawPageComments.getNumber());
+        PageCommentsDto pageComments = new PageCommentsDto(rawPageComments.getContent(), rawPageComments.getTotalPages(), rawPageComments.getNumber());
         return ResponseEntity.status(200).body(pageComments);
     }
 

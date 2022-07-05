@@ -13,5 +13,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PagePostDto {
     private List<Post> posts;
-    private int index;
+    private int totalPage;
+    private int page;
 }

@@ -25,7 +25,7 @@ public class PostController {
     @GetMapping
     public ResponseEntity<PagePostDto> getAllPost(@RequestParam("index") int index){
         Page<Post> rawPagePosts = service.getPosts(index);
-        PagePostDto pagePosts = new PagePostDto(rawPagePosts.getContent(), rawPagePosts.getNumber()); 
+        PagePostDto pagePosts = new PagePostDto(rawPagePosts.getContent(), rawPagePosts.getTotalPages(), rawPagePosts.getNumber()); 
     	return ResponseEntity.status(200).body(pagePosts);
     }
 
@@ -48,7 +48,7 @@ public class PostController {
     @GetMapping("/{idUser}")
     public ResponseEntity<PagePostDto> getPostsOfUser( @PathVariable("idUser") long idUser, @RequestParam("index") int index){
     	Page<Post> rawPagePost = service.getPostsOfUser(idUser, index);
-        PagePostDto pagePostDto = new PagePostDto(rawPagePost.getContent(), rawPagePost.getNumber());
+        PagePostDto pagePostDto = new PagePostDto(rawPagePost.getContent(), rawPagePost.getTotalPages(), rawPagePost.getNumber());
         return ResponseEntity.status(200).body(pagePostDto);
     }
 

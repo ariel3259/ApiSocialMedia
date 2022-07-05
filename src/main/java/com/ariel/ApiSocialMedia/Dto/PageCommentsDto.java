@@ -13,5 +13,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PageCommentsDto {
     private List<Comment> comments;
-    private int index;
+    private int totaPages;
+    private int page;
 }
