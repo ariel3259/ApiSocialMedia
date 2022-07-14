@@ -35,17 +35,17 @@ public class PostController {
     	return ResponseEntity.status(200).body("Created post");
     }
 
-    @DeleteMapping("/post/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> deletePost( @PathVariable("id") int id){
         return ResponseEntity.status(201).body(service.deletePost(id));
     }
 
-    @DeleteMapping("/post/user/{idUser}")
+    @DeleteMapping("/user/{idUser}")
     public ResponseEntity<Boolean> deletePostOfUser(@PathVariable("idUser") long idUser){
         return ResponseEntity.status(200).body(service.deletePostOfUser(idUser));
     }
 
-    @GetMapping("/{idUser}")
+    @GetMapping("/user/{idUser}")
     public ResponseEntity<PagePostDto> getPostsOfUser( @PathVariable("idUser") long idUser, @RequestParam("index") int index){
     	Page<Post> rawPagePost = service.getPostsOfUser(idUser, index);
         PagePostDto pagePostDto = new PagePostDto(rawPagePost.getContent(), rawPagePost.getTotalPages(), rawPagePost.getNumber());
