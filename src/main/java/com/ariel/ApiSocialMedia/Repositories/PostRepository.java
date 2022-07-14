@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import com.ariel.ApiSocialMedia.Model.Post;
+import com.ariel.ApiSocialMedia.Model.Users;
 
 
 @Repository
@@ -28,6 +29,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 	@Query(value = "UPDATE post SET state = false WHERE user_id = :idUser AND state = true", nativeQuery = true)
 	public void deleteByUserId(@Param("idUser") Long idUser);
 
-	@Query(value = "SELECT * FROM post p INNER JOIN users u ON p.user_id=u.id WHERE p.state = true AND p.user_id = :idUser", nativeQuery = true)
-	public Page<Post> findByUserId(@Param("idUser") Long idUser, Pageable pageable);
+	
+	public Page<Post> findByUserAndStateIsTrue(Users user, Pageable pageable);
 }

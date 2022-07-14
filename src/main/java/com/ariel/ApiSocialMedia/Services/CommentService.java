@@ -27,12 +27,16 @@ public class CommentService {
 
     public Page<Comment> getAllCommentsOfPost(long idPost, int index){
         Pageable page = PageRequest.of(index - 1, 10); 
-        return commentRepo.findByPostId(idPost, page);
+        Optional<Post> rawPost = postRepo.findById(idPost);
+        if(rawPost.isPresent()) return commentRepo.findByPost(rawPost.get(), page);
+        else return null;
     }
 
     public Page<Comment> getAllCommentsOfUser(long idUser, int index){
         Pageable page = PageRequest.of(index - 1, 10);
-        return commentRepo.findByUserId(idUser, page);
+        Optional<Users> rawUser = userRepo.findById(idUser);
+        if(rawUser.isPresent()) return commentRepo.findByUser(rawUser.get(), page);
+        return null;
     }
 
     public boolean saveComment(Comment comment, long idPost, long idUser ){

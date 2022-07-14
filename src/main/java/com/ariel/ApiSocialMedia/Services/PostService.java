@@ -47,8 +47,9 @@ public class PostService {
 
     public Page<Post> getPostsOfUser(long idUser, int index){
         Pageable page = PageRequest.of(index - 1 , 10);
-        if(repositoryUser.getById(idUser) == null) return null;
-        return repository.findByUserId(idUser, page);
+        Optional<Users> rawUser = repositoryUser.findById(idUser);
+        if(rawUser.isPresent()) return repository.findByUserAndStateIsTrue(rawUser.get(), page);
+        else return null; 
     }
 
 }
